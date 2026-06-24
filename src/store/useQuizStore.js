@@ -14,7 +14,8 @@ export const useQuizStore = create(
       // DB에서 문제 데이터를 비동기로 가져오는 액션
       fetchQuestions: async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/questions');
+          // 로컬 개발/Vercel 실배포에 모두 호환되는 상대 경로로 호출합니다.
+          const response = await fetch('/api/questions');
           if (!response.ok) throw new Error('API 응답에 오류가 발생했습니다.');
           const data = await response.json();
           set({ questions: data });
