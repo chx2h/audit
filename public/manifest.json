@@ -1,0 +1,21 @@
+{
+  "short_name": "감리패스",
+  "name": "감리 시험 대비 모바일 문제은행",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#0e8ee9",
+  "display": "standalone",
+  "orientation": "portrait"
+}
