@@ -13,6 +13,7 @@ export const useQuizStore = create(
       optionNotes: {}, // { [questionId]: { [optionNumber]: "사용자 오답 메모" } }
       comparisonTables: [], // [ { id, title, columns: ["항목1", "항목2"], rows: [ { attr, val1, val2 } ] } ]
       mindmapNotes: {}, // { [nodeId]: "사용자 백지 복습 메모" }
+      wordCorrections: {}, // { [questionId]: { wrongWord: "틀린 단어", correctWord: "바른 단어" } }
 
       // DB에서 문제 데이터를 비동기로 가져오는 액션
       fetchQuestions: async () => {
@@ -105,13 +106,22 @@ export const useQuizStore = create(
         }
       })),
 
+      // Word Correction Actions (오답 단어 치환용)
+      saveWordCorrection: (qId, wrongWord, correctWord) => set((state) => ({
+        wordCorrections: {
+          ...state.wordCorrections,
+          [qId]: { wrongWord, correctWord }
+        }
+      })),
+
       clearHistory: () => set({
         solvedHistory: {},
         wrongAnswers: [],
         bookmarks: [],
         optionNotes: {},
         comparisonTables: [],
-        mindmapNotes: {}
+        mindmapNotes: {},
+        wordCorrections: {}
       }),
 
       // Theme Actions
@@ -143,7 +153,8 @@ export const useQuizStore = create(
         theme: state.theme,
         optionNotes: state.optionNotes,
         comparisonTables: state.comparisonTables,
-        mindmapNotes: state.mindmapNotes
+        mindmapNotes: state.mindmapNotes,
+        wordCorrections: state.wordCorrections
       })
     }
   )

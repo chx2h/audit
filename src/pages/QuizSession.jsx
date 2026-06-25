@@ -11,6 +11,8 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
     saveSolveRecord,
     optionNotes,
     saveOptionNote,
+    wordCorrections,
+    saveWordCorrection,
   } = useQuizStore();
 
   // 1. Prepare quiz questions based on session type
@@ -208,14 +210,18 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
                 const noteVal = (optionNotes[currentQuestion.id] && optionNotes[currentQuestion.id][optionNum]) || '';
                 
                 let optionStyle = 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300';
+                let badgeText = '';
+                let badgeStyle = '';
                 
                 if (isAnswered) {
                   if (isCorrectOption) {
-                    optionStyle = 'border-emerald-500 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-300';
-                  } else if (isSelected && !isCorrectOption) {
-                    optionStyle = 'border-rose-500 bg-rose-50 text-rose-800 dark:bg-rose-950/20 dark:text-rose-300';
+                    optionStyle = 'border-rose-400 bg-rose-50/40 text-rose-800 dark:bg-rose-950/20 dark:text-rose-300';
+                    badgeText = '오답 지문 (치환됨)';
+                    badgeStyle = 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-400';
                   } else {
-                    optionStyle = 'border-slate-100 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-900/50 text-slate-400 dark:text-slate-600 opacity-60';
+                    optionStyle = 'border-emerald-300 bg-emerald-50/20 text-emerald-800 dark:bg-emerald-950/10 dark:text-emerald-300';
+                    badgeText = '옳은 개념';
+                    badgeStyle = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400';
                   }
                 } else {
                   optionStyle += ' active:border-primary-400 dark:active:border-primary-500 active:bg-slate-50 dark:active:bg-slate-800/50';
@@ -230,8 +236,15 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
                       className={`w-full text-left p-4 min-h-[56px] flex items-center justify-between border-2 rounded-2xl transition-all shadow-sm ${optionStyle} tap-highlight`}
                     >
                       <span className="text-sm font-medium flex-1 pr-3 leading-relaxed">
-                        <span className="font-bold mr-2 text-slate-400 dark:text-slate-500">{optionNum}.</span>
-                        {option}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-bold mr-1 text-slate-400 dark:text-slate-500">{optionNum}.</span>
+                          <span>{option}</span>
+                          {badgeText && (
+                            <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${badgeStyle}`}>
+                              {badgeText}
+                            </span>
+                          )}
+                        </div>
                       </span>
                       {isAnswered && (
                         <span className="flex-shrink-0">
@@ -265,22 +278,57 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
               })}
             </div>
 
-            {/* Explanation section (revealed smoothly after choice) */}
+            {/* Explanation & Word Correction section */}
             <AnimatePresence>
               {isAnswered && (
                 <motion.div
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 15 }}
-                  className="p-5 rounded-2xl bg-amber-50/70 border border-amber-100 dark:bg-slate-900 dark:border-slate-800 shadow-inner mb-6"
+                  className="space-y-4 mb-6"
                 >
-                  <div className="flex items-center gap-1.5 text-amber-800 dark:text-amber-400 font-semibold mb-2 text-sm">
-                    <HelpCircle size={16} />
-                    <span>해설 및 오답 분석</span>
+                  {/* 단어 치환 메모란 (X 포인트 타격) */}
+                  <div className="p-4 rounded-2xl bg-primary-50/50 border border-primary-100 dark:bg-slate-900/50 dark:border-slate-800 shadow-inner">
+                    <div className="flex items-center gap-1.5 text-primary-800 dark:text-primary-400 font-semibold mb-2 text-xs">
+                      <span>🎯 부정형 오답 치환 노트 (X 포인트 타격)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="지문 속 틀린 단어 (예: 미고려)"
+                        value={(wordCorrections[currentQuestion.id] && wordCorrections[currentQuestion.id].wrongWord) || ''}
+                        onChange={(e) => saveWordCorrection(
+                          currentQuestion.id, 
+                          e.target.value, 
+                          (wordCorrections[currentQuestion.id] && wordCorrections[currentQuestion.id].correctWord) || ''
+                        )}
+                        className="flex-1 text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-200 focus:outline-none focus:border-primary-400"
+                      />
+                      <span className="text-slate-400 text-xs">➡️</span>
+                      <input
+                        type="text"
+                        placeholder="바른 단어 (예: 고려)"
+                        value={(wordCorrections[currentQuestion.id] && wordCorrections[currentQuestion.id].correctWord) || ''}
+                        onChange={(e) => saveWordCorrection(
+                          currentQuestion.id, 
+                          (wordCorrections[currentQuestion.id] && wordCorrections[currentQuestion.id].wrongWord) || '', 
+                          e.target.value
+                        )}
+                        className="flex-1 text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-200 focus:outline-none focus:border-primary-400"
+                      />
+                    </div>
                   </div>
-                  <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                    {currentQuestion.explanation}
-                  </p>
+
+                  {/* 해설 내용 */}
+                  <div className="p-5 rounded-2xl bg-amber-50/70 border border-amber-100 dark:bg-slate-900 dark:border-slate-800 shadow-inner">
+                    <div className="flex items-center gap-1.5 text-amber-800 dark:text-amber-400 font-semibold mb-2 text-sm">
+                      <HelpCircle size={16} />
+                      <span>해설 및 오답 분석</span>
+                    </div>
+                    <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                      {currentQuestion.explanation}
+                    </p>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
