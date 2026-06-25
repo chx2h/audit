@@ -1,12 +1,15 @@
 import React from 'react';
 import { Trophy, Home, RotateCcw, AlertTriangle, CheckCircle, HelpCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useQuizStore } from '../store/useQuizStore';
 
 export default function QuizResult({ results, onBackToHome, onRetry }) {
   const total = results.length;
   const correctCount = results.filter(r => r.isCorrect).length;
   const score = Math.round((correctCount / total) * 100);
   const isPassed = score >= 60; // 60 points usually passes public audit exams
+
+  const { optionNotes, saveOptionNote } = useQuizStore();
 
   return (
     <div className="max-w-md mx-auto px-4 py-8 pb-24">
@@ -98,12 +101,41 @@ export default function QuizResult({ results, onBackToHome, onRetry }) {
               </div>
               <p className="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2 leading-snug">{q.question}</p>
               
-              {!q.isCorrect && (
-                <div className="text-xs text-rose-600 dark:text-rose-400 mb-2">
-                  내가 고른 답: {q.selectedAnswer || '미선택'} (정답: {q.answer})
-                </div>
-              )}
-              
+              {/* O/X 쪼개기 역추적 학습용 보기별 오답 정리란 */}
+              <div className="space-y-2 my-4 pl-3 border-l-2 border-slate-100 dark:border-slate-800">
+                {q.options.map((option, oIdx) => {
+                  const oNum = oIdx + 1;
+                  const isSelected = q.selectedAnswer === oNum;
+                  const isCorrectOption = q.answer === oNum;
+                  const note = (optionNotes[q.id] && optionNotes[q.id][oNum]) || '';
+                  
+                  return (
+                    <div key={oIdx} className="space-y-1">
+                      <div className="flex items-center gap-1.5 text-xs">
+                        <span className={`font-medium leading-relaxed ${
+                          isCorrectOption 
+                            ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
+                            : isSelected 
+                              ? 'text-rose-600 dark:text-rose-400 font-bold' 
+                              : 'text-slate-500 dark:text-slate-400'
+                        }`}>
+                          {oNum}. {option}
+                        </span>
+                        {isCorrectOption && <span className="text-[9px] scale-90 px-1 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 rounded">정답</span>}
+                        {isSelected && !isCorrectOption && <span className="text-[9px] scale-90 px-1 bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 rounded">내 선택</span>}
+                      </div>
+                      <input
+                        type="text"
+                        placeholder={`보기 ${oNum}번 역추적 분석 메모...`}
+                        value={note}
+                        onChange={(e) => saveOptionNote(q.id, oNum, e.target.value)}
+                        className="w-full text-[10px] px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-300 focus:outline-none focus:border-primary-400 focus:bg-white dark:focus:bg-slate-900 transition-colors"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
               <details className="mt-2 group">
                 <summary className="text-xs text-slate-400 dark:text-slate-500 cursor-pointer hover:underline list-none flex items-center gap-1 select-none">
                   <HelpCircle size={12} />

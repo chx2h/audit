@@ -10,6 +10,9 @@ export const useQuizStore = create(
       wrongAnswers: [], // Array of question IDs
       solvedHistory: {}, // { [questionId]: { isCorrect: boolean, selectedAnswer: number, solvedAt: string } }
       theme: 'light',
+      optionNotes: {}, // { [questionId]: { [optionNumber]: "사용자 오답 메모" } }
+      comparisonTables: [], // [ { id, title, columns: ["항목1", "항목2"], rows: [ { attr, val1, val2 } ] } ]
+      mindmapNotes: {}, // { [nodeId]: "사용자 백지 복습 메모" }
 
       // DB에서 문제 데이터를 비동기로 가져오는 액션
       fetchQuestions: async () => {
@@ -56,19 +59,12 @@ export const useQuizStore = create(
           }
         };
 
-        // Automatically update wrong answers based on correctness
         let newWrongAnswers = [...state.wrongAnswers];
         if (!isCorrect) {
           if (!newWrongAnswers.includes(id)) {
             newWrongAnswers.push(id);
           }
         } else {
-          // If correct and previously marked wrong, keep or remove?
-          // The requirement states "자동 오답 노트: 완벽히 맞출 때까지 반복 출제".
-          // In actual usage, if solved correctly in "오답 노트 모드" or normal mode,
-          // we can remove it from wrongAnswers or let the user decide.
-          // Let's implement: if correct in general, we can remove it from wrongAnswers if it's there
-          // so that they can clear the wrong answer list.
           newWrongAnswers = newWrongAnswers.filter(wId => wId !== id);
         }
 
@@ -78,10 +74,44 @@ export const useQuizStore = create(
         };
       }),
 
+      // Option Notes Actions (O/X 쪼개기용)
+      saveOptionNote: (qId, optionNum, noteText) => set((state) => {
+        const currentNotes = state.optionNotes[qId] || {};
+        return {
+          optionNotes: {
+            ...state.optionNotes,
+            [qId]: {
+              ...currentNotes,
+              [optionNum]: noteText
+            }
+          }
+        };
+      }),
+
+      // Comparison Table Actions (비교 분석용)
+      addComparisonTable: (table) => set((state) => ({
+        comparisonTables: [...state.comparisonTables, table]
+      })),
+
+      deleteComparisonTable: (tableId) => set((state) => ({
+        comparisonTables: state.comparisonTables.filter(t => t.id !== tableId)
+      })),
+
+      // Mindmap Notes Actions (키워드 꼬리물기용)
+      saveMindmapNote: (nodeId, noteText) => set((state) => ({
+        mindmapNotes: {
+          ...state.mindmapNotes,
+          [nodeId]: noteText
+        }
+      })),
+
       clearHistory: () => set({
         solvedHistory: {},
         wrongAnswers: [],
-        bookmarks: []
+        bookmarks: [],
+        optionNotes: {},
+        comparisonTables: [],
+        mindmapNotes: {}
       }),
 
       // Theme Actions
@@ -110,7 +140,10 @@ export const useQuizStore = create(
         bookmarks: state.bookmarks,
         wrongAnswers: state.wrongAnswers,
         solvedHistory: state.solvedHistory,
-        theme: state.theme
+        theme: state.theme,
+        optionNotes: state.optionNotes,
+        comparisonTables: state.comparisonTables,
+        mindmapNotes: state.mindmapNotes
       })
     }
   )

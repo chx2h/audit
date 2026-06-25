@@ -9,6 +9,8 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
     bookmarks,
     toggleBookmark,
     saveSolveRecord,
+    optionNotes,
+    saveOptionNote,
   } = useQuizStore();
 
   // 1. Prepare quiz questions based on session type
@@ -203,43 +205,62 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
                 const optionNum = idx + 1;
                 const isSelected = selectedAnswer === optionNum;
                 const isCorrectOption = optionNum === currentQuestion.answer;
+                const noteVal = (optionNotes[currentQuestion.id] && optionNotes[currentQuestion.id][optionNum]) || '';
                 
                 let optionStyle = 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300';
                 
                 if (isAnswered) {
                   if (isCorrectOption) {
-                    // Always highlight correct answer
                     optionStyle = 'border-emerald-500 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-300';
                   } else if (isSelected && !isCorrectOption) {
-                    // Highlight wrong selection
                     optionStyle = 'border-rose-500 bg-rose-50 text-rose-800 dark:bg-rose-950/20 dark:text-rose-300';
                   } else {
                     optionStyle = 'border-slate-100 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-900/50 text-slate-400 dark:text-slate-600 opacity-60';
                   }
                 } else {
-                  // Normal hover/active states
                   optionStyle += ' active:border-primary-400 dark:active:border-primary-500 active:bg-slate-50 dark:active:bg-slate-800/50';
                 }
 
                 return (
-                  <motion.button
-                    key={idx}
-                    whileTap={!isAnswered ? { scale: 0.98 } : {}}
-                    onClick={() => handleSelectOption(optionNum)}
-                    disabled={isAnswered}
-                    className={`w-full text-left p-4 min-h-[56px] flex items-center justify-between border-2 rounded-2xl transition-all shadow-sm ${optionStyle} tap-highlight`}
-                  >
-                    <span className="text-sm font-medium flex-1 pr-3 leading-relaxed">
-                      <span className="font-bold mr-2 text-slate-400 dark:text-slate-500">{optionNum}.</span>
-                      {option}
-                    </span>
-                    {isAnswered && (
-                      <span className="flex-shrink-0">
-                        {isCorrectOption && <CheckCircle2 size={20} className="text-emerald-500" />}
-                        {isSelected && !isCorrectOption && <XCircle size={20} className="text-rose-500" />}
+                  <div key={idx} className="space-y-1">
+                    <motion.button
+                      whileTap={!isAnswered ? { scale: 0.98 } : {}}
+                      onClick={() => handleSelectOption(optionNum)}
+                      disabled={isAnswered}
+                      className={`w-full text-left p-4 min-h-[56px] flex items-center justify-between border-2 rounded-2xl transition-all shadow-sm ${optionStyle} tap-highlight`}
+                    >
+                      <span className="text-sm font-medium flex-1 pr-3 leading-relaxed">
+                        <span className="font-bold mr-2 text-slate-400 dark:text-slate-500">{optionNum}.</span>
+                        {option}
                       </span>
-                    )}
-                  </motion.button>
+                      {isAnswered && (
+                        <span className="flex-shrink-0">
+                          {isCorrectOption && <CheckCircle2 size={20} className="text-emerald-500" />}
+                          {isSelected && !isCorrectOption && <XCircle size={20} className="text-rose-500" />}
+                        </span>
+                      )}
+                    </motion.button>
+                    
+                    {/* O/X 역추적 학습용 메모란 */}
+                    <AnimatePresence>
+                      {isAnswered && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="overflow-hidden px-1"
+                        >
+                          <input
+                            type="text"
+                            placeholder={`보기 ${optionNum}번 분석 (틀렸거나 맞은 이유)`}
+                            value={noteVal}
+                            onChange={(e) => saveOptionNote(currentQuestion.id, optionNum, e.target.value)}
+                            className="w-full text-[11px] px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 focus:outline-none focus:border-primary-400 focus:bg-white dark:focus:bg-slate-900 transition-colors"
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 );
               })}
             </div>
