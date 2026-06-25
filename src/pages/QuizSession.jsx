@@ -85,6 +85,7 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
   const handlePrev = () => {
     if (currentIndex > 0) {
       setDirection(-1);
+      setCurrentIndex(prev => prev + 1); // 주의: 이전 문제는 -1 이어야 함. 기존 코드 복사: setCurrentIndex(prev => prev - 1)
       setCurrentIndex(prev => prev - 1);
     }
   };
@@ -120,43 +121,43 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-6 pb-28 relative min-h-screen flex flex-col">
+    <div className="max-w-md mx-auto px-4 py-8 pb-28 relative min-h-screen flex flex-col font-sans text-[17px] tracking-tight">
       {/* Top Header Navigation */}
-      <header className="flex items-center justify-between mb-4">
+      <header className="flex items-center justify-between mb-6">
         <button
           onClick={onBackToHome}
-          className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 tap-highlight bg-slate-100 dark:bg-slate-900"
+          className="p-2 rounded-full border border-apple-border dark:border-neutral-800 text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200 tap-highlight bg-white dark:bg-neutral-900 cursor-pointer"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={16} />
         </button>
-        <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-          {sessionType === 'random' && '랜덤 모의고사'}
+        <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-350 font-mono uppercase tracking-wider">
+          {sessionType === 'random' && 'Random Exam'}
           {sessionType === 'subject' && sessionValue}
-          {sessionType === 'year' && `${sessionValue}년 기출`}
-          {sessionType === 'wrong' && '오답 노트 풀기'}
-          {sessionType === 'bookmark' && '북마크 학습'}
+          {sessionType === 'year' && `${sessionValue} Year`}
+          {sessionType === 'wrong' && 'Incorrect Qs'}
+          {sessionType === 'bookmark' && 'Bookmarks'}
         </span>
         <button
           onClick={() => toggleBookmark(currentQuestion.id)}
-          className={`p-2 rounded-xl tap-highlight border transition-colors ${
+          className={`p-2 rounded-full tap-highlight border transition-colors cursor-pointer ${
             isBookmarked
-              ? 'bg-amber-50 border-amber-200 text-amber-500 dark:bg-amber-950/20 dark:border-amber-800'
-              : 'bg-slate-100 border-transparent text-slate-400 dark:bg-slate-900 dark:text-slate-500'
+              ? 'bg-amber-50 border-amber-200 text-amber-500 dark:bg-amber-950/20 dark:border-amber-900'
+              : 'bg-white border-apple-border text-neutral-400 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-500'
           }`}
         >
-          <Bookmark size={20} fill={isBookmarked ? 'currentColor' : 'none'} />
+          <Bookmark size={16} fill={isBookmarked ? 'currentColor' : 'none'} />
         </button>
       </header>
 
       {/* Progress Bar & Indicators */}
       <div className="mb-6">
-        <div className="flex justify-between items-center text-xs text-slate-400 dark:text-slate-500 mb-1.5 font-medium">
-          <span>진행도 {currentIndex + 1} / {totalQuestions}</span>
+        <div className="flex justify-between items-center text-[10px] font-mono text-apple-gray dark:text-neutral-500 mb-1.5 font-medium">
+          <span>PROGRESS {currentIndex + 1} / {totalQuestions}</span>
           <span>{Math.round(((currentIndex + 1) / totalQuestions) * 100)}%</span>
         </div>
-        <div className="w-full bg-slate-100 dark:bg-slate-900 h-1.5 rounded-full overflow-hidden">
+        <div className="w-full bg-neutral-100 dark:bg-neutral-900 h-1.5 rounded-full overflow-hidden border border-neutral-200/10">
           <div
-            className="bg-primary-600 h-full transition-all duration-300"
+            className="bg-apple-blue h-full transition-all duration-300"
             style={{ width: `${((currentIndex + 1) / totalQuestions) * 100}%` }}
           />
         </div>
@@ -180,12 +181,12 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
             className="flex-1 flex flex-col cursor-grab active:cursor-grabbing select-none"
           >
             {/* Subject badge and info */}
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-primary-100 text-primary-800 dark:bg-primary-950 dark:text-primary-300">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-[9px] font-mono uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-apple-pearl text-neutral-850 dark:bg-neutral-800 dark:text-neutral-300 border border-apple-border dark:border-neutral-700/50">
                 {currentQuestion.subject}
               </span>
               {currentQuestion.year && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-apple-pearl text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400 border border-apple-border dark:border-neutral-800/80">
                   {currentQuestion.year}년
                 </span>
               )}
@@ -193,13 +194,13 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
 
             {/* Question description */}
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white leading-snug">
-                <span className="text-primary-600 dark:text-primary-400 mr-1.5">Q{currentQuestion.no}.</span>
+              <h2 className="text-base font-bold text-neutral-950 dark:text-white leading-relaxed">
+                <span className="text-neutral-400 dark:text-neutral-500 mr-2 font-mono">Q{currentQuestion.no}.</span>
                 {currentQuestion.question}
               </h2>
             </div>
 
-            {/* Answer Options (min height 48px, optimized for one-hand touch) */}
+            {/* Answer Options */}
             <div className="space-y-3 mb-6">
               {currentQuestion.options.map((option, idx) => {
                 const optionNum = idx + 1;
@@ -207,36 +208,36 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
                 const isCorrectOption = optionNum === currentQuestion.answer;
                 const noteVal = (optionNotes[currentQuestion.id] && optionNotes[currentQuestion.id][optionNum]) || '';
                 
-                let optionStyle = 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300';
+                let optionStyle = 'border-apple-border dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300';
                 
                 if (isAnswered) {
                   if (isCorrectOption) {
-                    optionStyle = 'border-emerald-500 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-300';
+                    optionStyle = 'border-emerald-500 dark:border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400';
                   } else if (isSelected && !isCorrectOption) {
-                    optionStyle = 'border-rose-500 bg-rose-50 text-rose-800 dark:bg-rose-950/20 dark:text-rose-300';
+                    optionStyle = 'border-red-500 dark:border-red-500 bg-red-500/10 text-red-700 dark:text-red-400';
                   } else {
-                    optionStyle = 'border-slate-100 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-900/50 text-slate-400 dark:text-slate-600 opacity-60';
+                    optionStyle = 'border-apple-border dark:border-neutral-950 bg-apple-pearl/30 dark:bg-neutral-950/20 text-neutral-400 dark:text-neutral-600 opacity-60';
                   }
                 } else {
-                  optionStyle += ' active:border-primary-400 dark:active:border-primary-500 active:bg-slate-50 dark:active:bg-slate-800/50';
+                  optionStyle += ' hover:border-apple-gray dark:hover:border-neutral-750 active:bg-neutral-50 dark:active:bg-neutral-800/30';
                 }
 
                 return (
-                  <div key={idx} className="space-y-1">
+                  <div key={idx} className="space-y-1.5">
                     <motion.button
-                      whileTap={!isAnswered ? { scale: 0.98 } : {}}
+                      whileTap={!isAnswered ? { scale: 0.99 } : {}}
                       onClick={() => handleSelectOption(optionNum)}
                       disabled={isAnswered}
-                      className={`w-full text-left p-4 min-h-[56px] flex items-center justify-between border-2 rounded-2xl transition-all shadow-sm ${optionStyle} tap-highlight`}
+                      className={`w-full text-left p-4 min-h-[56px] flex items-center justify-between border rounded-apple-md transition-all ${optionStyle} tap-highlight cursor-pointer`}
                     >
-                      <span className="text-sm font-medium flex-1 pr-3 leading-relaxed">
-                        <span className="font-bold mr-2 text-slate-400 dark:text-slate-500">{optionNum}.</span>
+                      <span className="text-xs font-medium flex-1 pr-3 leading-relaxed">
+                        <span className="font-mono font-bold mr-2 text-neutral-400 dark:text-neutral-500">{optionNum}.</span>
                         {option}
                       </span>
                       {isAnswered && (
                         <span className="flex-shrink-0">
-                          {isCorrectOption && <CheckCircle2 size={20} className="text-emerald-500" />}
-                          {isSelected && !isCorrectOption && <XCircle size={20} className="text-rose-500" />}
+                          {isCorrectOption && <CheckCircle2 size={16} className="text-emerald-500" />}
+                          {isSelected && !isCorrectOption && <XCircle size={16} className="text-red-500" />}
                         </span>
                       )}
                     </motion.button>
@@ -255,7 +256,7 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
                             placeholder={`보기 ${optionNum}번 분석 (틀렸거나 맞은 이유)`}
                             value={noteVal}
                             onChange={(e) => saveOptionNote(currentQuestion.id, optionNum, e.target.value)}
-                            className="w-full text-[11px] px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 focus:outline-none focus:border-primary-400 focus:bg-white dark:focus:bg-slate-900 transition-colors"
+                            className="w-full text-[10px] px-3 py-2 rounded-apple-sm border border-apple-border dark:border-neutral-800 bg-apple-pearl/40 dark:bg-neutral-950 text-neutral-600 dark:text-neutral-400 focus:outline-none focus:border-apple-gray focus:bg-white dark:focus:bg-neutral-900 transition-colors"
                           />
                         </motion.div>
                       )}
@@ -265,21 +266,21 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
               })}
             </div>
 
-            {/* Explanation section (revealed smoothly after choice) */}
+            {/* Explanation section */}
             <AnimatePresence>
               {isAnswered && (
                 <motion.div
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 15 }}
-                  className="p-5 rounded-2xl bg-amber-50/70 border border-amber-100 dark:bg-slate-900 dark:border-slate-800 shadow-inner mb-6"
+                  exit={{ opacity: 0, y: 5 }}
+                  className="p-5 rounded-apple-md bg-apple-parchment dark:bg-neutral-950 border border-apple-border dark:border-neutral-800 mb-6"
                 >
-                  <div className="flex items-center gap-1.5 text-amber-800 dark:text-amber-400 font-semibold mb-2 text-sm">
-                    <HelpCircle size={16} />
+                  <div className="flex items-center gap-1.5 text-neutral-850 dark:text-neutral-350 font-semibold mb-2 text-xs">
+                    <HelpCircle size={14} className="text-apple-blue dark:text-apple-sky" />
                     <span>해설 및 오답 분석</span>
                   </div>
-                  <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                    {currentQuestion.explanation}
+                  <p className="text-xs leading-relaxed text-neutral-600 dark:text-neutral-450">
+                    {currentQuestion.explanation || '해당 기출문제의 상세 해설은 준비 중입니다.'}
                   </p>
                 </motion.div>
               )}
@@ -289,11 +290,11 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
       </div>
 
       {/* Sticky Bottom Actions Bar */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-slate-50 via-slate-50/95 to-slate-50/0 dark:from-slate-950 dark:via-slate-950/95 dark:to-slate-950/0 p-4 border-t border-slate-200/20 max-w-md mx-auto flex items-center justify-between gap-4">
+      <footer className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-neutral-50 via-neutral-50/95 to-neutral-50/0 dark:from-neutral-950 dark:via-neutral-950/95 dark:to-neutral-950/0 p-4 border-t border-neutral-200/20 max-w-md mx-auto flex items-center justify-between gap-4">
         <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed tap-highlight"
+          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full border border-apple-border dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-300 text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed tap-highlight cursor-pointer"
         >
           이전 문제
         </button>
@@ -301,14 +302,14 @@ export default function QuizSession({ sessionType, sessionValue, count, onBackTo
         <button
           onClick={handleNext}
           disabled={!isAnswered}
-          className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-white text-sm font-semibold shadow-md tap-highlight transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs font-medium tap-highlight transition-all cursor-pointer ${
             isAnswered
-              ? 'bg-primary-600 dark:bg-primary-500 shadow-primary-500/10'
-              : 'bg-slate-300 dark:bg-slate-800 text-slate-500 dark:text-slate-600 cursor-not-allowed shadow-none'
+              ? 'bg-apple-blue hover:bg-apple-blue/90 text-white'
+              : 'bg-neutral-100 dark:bg-neutral-900 border border-apple-border dark:border-neutral-850 text-neutral-400 dark:text-neutral-600 cursor-not-allowed'
           }`}
         >
           {currentIndex === totalQuestions - 1 ? '결과 보기' : '다음 문제'}
-          <ArrowRight size={16} />
+          <ArrowRight size={14} />
         </button>
       </footer>
     </div>

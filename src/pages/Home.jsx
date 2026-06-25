@@ -202,127 +202,128 @@ export default function Home({ onStartQuiz }) {
   ];
 
   return (
-    <div className="max-w-md mx-auto px-4 py-6 pb-24">
+    <div className="max-w-md mx-auto px-4 py-8 pb-24 font-sans text-[17px] tracking-tight">
       {/* Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            <span className="text-primary-600 dark:text-primary-400">패스</span> 문제은행
+          <h1 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 font-display">
+            Pass Bank.
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">감리 시험 대비 고효율 학습 앱</p>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 font-mono mt-0.5">High-efficiency study tool for audit exams.</p>
         </div>
         <button
           onClick={toggleTheme}
-          className="p-2.5 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 tap-highlight"
+          className="p-2 rounded-full bg-white dark:bg-neutral-900 border border-apple-border dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 tap-highlight cursor-pointer"
           aria-label="Toggle theme"
         >
-          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
         </button>
       </header>
 
-      {/* Segmented Tab Controls */}
-      <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl mb-6">
+      {/* Segmented Tab Controls (완벽한 알약 형태) */}
+      <div className="flex bg-neutral-100 dark:bg-neutral-950 p-1 rounded-full mb-6 border border-apple-border dark:border-neutral-800">
         <button
           onClick={() => setActiveTab('quiz')}
-          className={`flex-1 py-2.5 text-center text-sm font-semibold rounded-xl transition-all ${
+          className={`flex-1 py-2 text-center text-xs font-medium rounded-full transition-all cursor-pointer ${
             activeTab === 'quiz'
-              ? 'bg-white dark:bg-slate-800 text-primary-600 dark:text-primary-400 shadow-sm'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800'
+              ? 'bg-white dark:bg-neutral-900 text-apple-blue dark:text-apple-sky border border-apple-border dark:border-neutral-800'
+              : 'text-apple-gray hover:text-neutral-800 dark:hover:text-neutral-300'
           }`}
         >
           기출문제 풀이
         </button>
         <button
           onClick={() => setActiveTab('study')}
-          className={`flex-1 py-2.5 text-center text-sm font-semibold rounded-xl transition-all ${
+          className={`flex-1 py-2 text-center text-xs font-medium rounded-full transition-all cursor-pointer ${
             activeTab === 'study'
-              ? 'bg-white dark:bg-slate-800 text-primary-600 dark:text-primary-400 shadow-sm'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800'
+              ? 'bg-white dark:bg-neutral-900 text-apple-blue dark:text-apple-sky border border-apple-border dark:border-neutral-800'
+              : 'text-apple-gray hover:text-neutral-800 dark:hover:text-neutral-300'
           }`}
         >
-          고효율 복습노트 ⭐
+          고효율 복습노트
         </button>
       </div>
 
       {/* Tab Contents: QUIZ */}
       {activeTab === 'quiz' && (
         <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.15 }}
         >
-          {/* Stats Card Dashboard */}
+          {/* Stats Card Dashboard (그림자 제거, 18px 모서리) */}
           <section className="mb-6">
-            <h2 className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">내 학습 진척도</h2>
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm">
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="text-center p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
-                  <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">진도율</span>
-                  <span className="text-2xl font-bold text-slate-950 dark:text-white">{progressPercent}%</span>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">({solvedCount} / {totalQuestions} 문제)</span>
+            <h2 className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono mb-2">My Learning Progress</h2>
+            <div className="apple-card rounded-apple-lg p-5">
+              <div className="grid grid-cols-2 gap-4 mb-5">
+                <div className="text-center p-3 rounded-apple-md bg-apple-pearl dark:bg-neutral-950 border border-apple-border dark:border-neutral-800">
+                  <span className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 font-mono block mb-1">PROGRESS</span>
+                  <span className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">{progressPercent}%</span>
+                  <span className="text-[9px] text-apple-gray dark:text-neutral-500 block mt-1">({solvedCount} / {totalQuestions} Qs)</span>
                 </div>
-                <div className="text-center p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
-                  <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">평균 정답률</span>
-                  <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{accuracyPercent}%</span>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">({correctCount}개 맞춤)</span>
+                <div className="text-center p-3 rounded-apple-md bg-apple-pearl dark:bg-neutral-950 border border-apple-border dark:border-neutral-800">
+                  <span className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 font-mono block mb-1">ACCURACY</span>
+                  <span className="text-2xl font-bold text-apple-blue dark:text-apple-sky">{accuracyPercent}%</span>
+                  <span className="text-[9px] text-apple-gray dark:text-neutral-500 block mt-1">({correctCount} correct)</span>
                 </div>
               </div>
 
-              {/* Progress bar */}
-              <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden mb-4">
+              {/* Progress bar (bg-apple-blue) */}
+              <div className="w-full bg-neutral-100 dark:bg-neutral-800 h-2 rounded-full overflow-hidden mb-4 border border-neutral-200/10">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${progressPercent}%` }}
-                  transition={{ duration: 0.8, ease: 'easeOut' }}
-                  className="bg-primary-600 dark:bg-primary-500 h-full rounded-full"
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  className="bg-apple-blue h-full rounded-full"
                 />
               </div>
 
-              <div className="flex justify-between items-center text-xs text-slate-400 dark:text-slate-500">
-                <span>북마크 {bookmarks.length}개</span>
-                <span>오답노트 {wrongAnswers.length}개</span>
+              <div className="flex justify-between items-center text-[11px] font-mono text-apple-gray dark:text-neutral-450">
+                <span>Bookmarks: {bookmarks.length}</span>
+                <span>Wrong Answers: {wrongAnswers.length}</span>
               </div>
             </div>
           </section>
 
           {/* Quick Play Menu */}
           <section className="mb-6">
-            <h2 className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">스피드 트레이닝</h2>
+            <h2 className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono mb-2">Speed Training</h2>
             <div className="grid grid-cols-2 gap-3">
               <motion.button
-                whileTap={{ scale: 0.97 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => onStartQuiz({ type: 'random', count: 10 })}
-                className="flex flex-col items-start text-left p-5 rounded-2xl bg-gradient-to-br from-primary-600 to-indigo-700 text-white shadow-md shadow-primary-500/10"
+                className="flex flex-col items-start text-left p-5 rounded-apple-lg bg-apple-blue hover:bg-apple-blue/90 text-white border border-transparent cursor-pointer tap-highlight"
               >
-                <div className="p-2 rounded-xl bg-white/10 mb-4 text-white">
-                  <Play size={20} fill="currentColor" />
+                <div className="p-2 rounded bg-white/10 mb-4 text-white">
+                  <Play size={16} fill="currentColor" />
                 </div>
-                <span className="font-semibold text-base mb-1">랜덤 모의고사</span>
-                <span className="text-xs text-white/70">무작위 10문항 풀기</span>
+                <span className="font-semibold text-sm mb-1">랜덤 모의고사</span>
+                <span className="text-[10px] opacity-70">무작위 10문항 풀기</span>
               </motion.button>
 
               <motion.button
-                whileTap={{ scale: 0.97 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => wrongAnswers.length > 0 && onStartQuiz({ type: 'wrong' })}
                 disabled={wrongAnswers.length === 0}
-                className={`flex flex-col items-start text-left p-5 rounded-2xl text-white shadow-md transition-all ${wrongAnswers.length > 0
-                    ? 'bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/10'
-                    : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed shadow-none'
-                  }`}
+                className={`flex flex-col items-start text-left p-5 rounded-apple-lg border cursor-pointer transition-all tap-highlight ${
+                  wrongAnswers.length > 0
+                    ? 'bg-white dark:bg-neutral-900 border-red-500/50 hover:bg-red-50/10 text-red-600 dark:text-red-500'
+                    : 'bg-neutral-50 dark:bg-neutral-900/30 border-apple-border dark:border-neutral-800 text-neutral-400 dark:text-neutral-600 cursor-not-allowed'
+                }`}
               >
-                <div className={`p-2 rounded-xl mb-4 ${wrongAnswers.length > 0 ? 'bg-white/10 text-white' : 'bg-slate-300 dark:bg-slate-700 text-slate-400'}`}>
-                  <Award size={20} />
+                <div className={`p-2 rounded mb-4 ${wrongAnswers.length > 0 ? 'bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-500' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400'}`}>
+                  <Award size={16} />
                 </div>
-                <span className="font-semibold text-base mb-1">자동 오답 노트</span>
-                <span className="text-xs opacity-80">{wrongAnswers.length}개 대기 중</span>
+                <span className="font-semibold text-sm mb-1">자동 오답 노트</span>
+                <span className="text-[10px] opacity-70">{wrongAnswers.length}개 대기 중</span>
               </motion.button>
             </div>
           </section>
 
           {/* Subjects Section */}
           <section className="mb-6">
-            <h2 className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">단원별 집중 학습</h2>
-            <div className="space-y-3">
+            <h2 className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono mb-2">Focus by Subject</h2>
+            <div className="space-y-2">
               {subjects.map((sub, idx) => {
                 const subCount = getSubjectCount(sub);
                 const subSolved = getSubjectSolvedCount(sub);
@@ -332,21 +333,21 @@ export default function Home({ onStartQuiz }) {
                     key={`subject-${sub}-${idx}`}
                     whileTap={{ scale: 0.99 }}
                     onClick={() => onStartQuiz({ type: 'subject', value: sub })}
-                    className="w-full flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm text-left tap-highlight"
+                    className="w-full flex items-center justify-between p-4 apple-card rounded-apple-lg text-left tap-highlight hover:border-apple-gray dark:hover:border-neutral-700 cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-primary-50 dark:bg-primary-950/50 text-primary-600 dark:text-primary-400">
-                        <BookOpen size={20} />
+                      <div className="p-2 rounded bg-apple-pearl dark:bg-neutral-950 border border-apple-border dark:border-neutral-800 text-neutral-600 dark:text-neutral-400">
+                        <BookOpen size={16} />
                       </div>
                       <div>
-                        <h3 className="font-medium text-slate-800 dark:text-slate-100 text-sm">{sub}</h3>
-                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-                          진행률 {pct}% ({subSolved}/{subCount} 문제)
+                        <h3 className="font-medium text-neutral-800 dark:text-neutral-100 text-xs">{sub}</h3>
+                        <p className="text-[10px] text-apple-gray dark:text-neutral-500 mt-0.5 font-mono">
+                          {subSolved} / {subCount} Solved ({pct}%)
                         </p>
                       </div>
                     </div>
-                    <div className="w-12 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div className="bg-primary-600 h-full" style={{ width: `${pct}%` }} />
+                    <div className="w-12 h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden border border-neutral-200/10">
+                      <div className="bg-apple-blue h-full" style={{ width: `${pct}%` }} />
                     </div>
                   </motion.button>
                 );
@@ -356,20 +357,20 @@ export default function Home({ onStartQuiz }) {
 
           {/* Years Section */}
           <section className="mb-6">
-            <h2 className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">기출 연도별 풀기</h2>
+            <h2 className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono mb-2">Solved by Year</h2>
             <div className="grid grid-cols-2 gap-3">
               {years.map((year, idx) => (
                 <motion.button
                   key={`year-${year}-${idx}`}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => onStartQuiz({ type: 'year', value: year })}
-                  className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm tap-highlight"
+                  className="flex items-center justify-between p-4 apple-card rounded-apple-lg hover:border-apple-gray dark:hover:border-neutral-700 cursor-pointer tap-highlight"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400">
-                      <Calendar size={18} />
+                    <div className="p-2 rounded bg-apple-pearl dark:bg-neutral-950 border border-apple-border dark:border-neutral-800 text-neutral-600 dark:text-neutral-400">
+                      <Calendar size={14} />
                     </div>
-                    <span className="font-medium text-sm text-slate-800 dark:text-slate-200">{year}년 기출</span>
+                    <span className="font-medium text-xs text-neutral-800 dark:text-neutral-200">{year}년 기출</span>
                   </div>
                 </motion.button>
               ))}
@@ -378,23 +379,24 @@ export default function Home({ onStartQuiz }) {
 
           {/* Bookmarks Section */}
           <section className="mb-10">
-            <h2 className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">보관함</h2>
+            <h2 className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono mb-2">Bookmarks</h2>
             <motion.button
               whileTap={{ scale: 0.99 }}
               onClick={() => bookmarks.length > 0 && onStartQuiz({ type: 'bookmark' })}
               disabled={bookmarks.length === 0}
-              className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all ${bookmarks.length > 0
-                  ? 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 tap-highlight'
-                  : 'bg-slate-50 dark:bg-slate-950/30 border-slate-100 dark:border-slate-900 opacity-60 cursor-not-allowed'
-                }`}
+              className={`w-full flex items-center justify-between p-4 rounded-apple-lg border transition-all ${
+                bookmarks.length > 0
+                  ? 'bg-white dark:bg-neutral-900 border-apple-border dark:border-neutral-800 hover:border-apple-gray dark:hover:border-neutral-700 cursor-pointer tap-highlight'
+                  : 'bg-neutral-50 dark:bg-neutral-900/30 border-apple-border dark:border-neutral-800/50 opacity-60 cursor-not-allowed'
+              }`}
             >
               <div className="flex items-center gap-3">
-                <div className={`p-2.5 rounded-xl ${bookmarks.length > 0 ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-500' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
-                  <BookMarked size={20} />
+                <div className={`p-2 rounded ${bookmarks.length > 0 ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-600' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400'}`}>
+                  <BookMarked size={16} />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-medium text-slate-800 dark:text-slate-100 text-sm">북마크 문제만 풀기</h3>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">총 {bookmarks.length}개 보관됨</p>
+                  <h3 className="font-medium text-neutral-800 dark:text-neutral-100 text-xs">북마크 문제만 풀기</h3>
+                  <p className="text-[10px] text-apple-gray dark:text-neutral-500 mt-0.5 font-mono">Total {bookmarks.length} bookmarked</p>
                 </div>
               </div>
             </motion.button>
@@ -404,10 +406,10 @@ export default function Home({ onStartQuiz }) {
           <div className="text-center">
             <button
               onClick={handleReset}
-              className="inline-flex items-center gap-2 text-xs text-red-500 dark:text-red-400 hover:underline opacity-80"
+              className="inline-flex items-center gap-2 text-xs text-red-500 hover:underline opacity-80 cursor-pointer font-mono"
             >
-              <RefreshCw size={12} />
-              학습 기록 초기화
+              <RefreshCw size={10} />
+              RESET STUDY RECORDS
             </button>
           </div>
         </motion.div>
@@ -416,28 +418,28 @@ export default function Home({ onStartQuiz }) {
       {/* Tab Contents: STUDY (고효율 복습노트) */}
       {activeTab === 'study' && (
         <motion.div
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.15 }}
           className="space-y-8"
         >
           {/* 1. Comparison Tables (비교 분석 대조표) */}
           <section>
             <div className="flex justify-between items-center mb-3">
-              <h2 className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">나만의 비교 분석표</h2>
+              <h2 className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono">Contrast Tables</h2>
               <button
                 onClick={() => setShowModal(true)}
-                className="inline-flex items-center gap-1 text-xs font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50 px-2.5 py-1.5 rounded-lg tap-highlight"
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-white bg-apple-blue px-3 py-1.5 rounded-full hover:bg-apple-blue/90 tap-highlight cursor-pointer"
               >
-                <Plus size={14} />
+                <Plus size={12} />
                 대조표 추가
               </button>
             </div>
 
             {comparisonTables.length === 0 ? (
-              <div className="text-center p-8 bg-white dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-400 dark:text-slate-600">
-                <Columns className="mx-auto mb-2 opacity-50" size={32} />
-                <p className="text-xs font-semibold">저장된 비교표가 없습니다.</p>
+              <div className="text-center p-8 bg-white dark:bg-neutral-900 border border-dashed border-apple-border dark:border-neutral-800 rounded-apple-lg text-neutral-400 dark:text-neutral-500">
+                <Columns className="mx-auto mb-2 opacity-40" size={24} />
+                <p className="text-xs font-semibold text-neutral-500">저장된 비교표가 없습니다.</p>
                 <p className="text-[10px] opacity-80 mt-1">NAS vs SAN 처럼 헷갈리는 기술을 등록해 보세요.</p>
               </div>
             ) : (
@@ -445,36 +447,36 @@ export default function Home({ onStartQuiz }) {
                 {comparisonTables.map((table) => (
                   <div
                     key={table.id}
-                    className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm p-4 relative overflow-hidden"
+                    className="apple-card rounded-apple-lg p-4 relative overflow-hidden"
                   >
                     <div className="flex justify-between items-center mb-3 pr-8">
-                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">{table.title}</h3>
+                      <h3 className="font-semibold text-xs text-neutral-950 dark:text-white">{table.title}</h3>
                       <button
                         onClick={() => deleteComparisonTable(table.id)}
-                        className="absolute right-3 top-3 text-rose-500 dark:text-rose-400 p-1.5 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg tap-highlight"
+                        className="absolute right-3 top-3 text-red-500 dark:text-red-400 p-1 hover:bg-neutral-50 dark:hover:bg-neutral-950/30 rounded tap-highlight cursor-pointer"
                         aria-label="Delete table"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={12} />
                       </button>
                     </div>
 
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto border border-apple-border dark:border-neutral-800 rounded-apple-md">
                       <table className="w-full text-xs text-left border-collapse">
                         <thead>
-                          <tr className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
-                            <th className="py-2 px-3 font-semibold">비교 항목</th>
-                            <th className="py-2 px-3 font-semibold">{table.columns[0]}</th>
-                            <th className="py-2 px-3 font-semibold">{table.columns[1]}</th>
+                          <tr className="bg-apple-pearl dark:bg-neutral-950 text-apple-gray dark:text-neutral-400 border-b border-apple-border dark:border-neutral-800 font-mono">
+                            <th className="py-2 px-3 font-medium text-[10px] uppercase">비교 항목</th>
+                            <th className="py-2 px-3 font-medium text-[10px] uppercase">{table.columns[0]}</th>
+                            <th className="py-2 px-3 font-medium text-[10px] uppercase">{table.columns[1]}</th>
                           </tr>
                         </thead>
                         <tbody>
                           {table.rows.map((row, rIdx) => (
                             <tr
                               key={rIdx}
-                              className="border-b border-slate-50 dark:border-slate-800/50 text-slate-700 dark:text-slate-300"
+                              className="border-b border-neutral-100 dark:border-neutral-800/50 text-neutral-700 dark:text-neutral-300"
                             >
-                              <td className="py-2 px-3 font-bold bg-slate-50/50 dark:bg-slate-800/10">{row.attr}</td>
-                              <td className="py-2 px-3 leading-relaxed">{row.val1}</td>
+                              <td className="py-2 px-3 font-medium bg-apple-pearl/40 dark:bg-neutral-950/30 border-r border-apple-border dark:border-neutral-800">{row.attr}</td>
+                              <td className="py-2 px-3 leading-relaxed border-r border-apple-border dark:border-neutral-800">{row.val1}</td>
                               <td className="py-2 px-3 leading-relaxed">{row.val2}</td>
                             </tr>
                           ))}
@@ -489,7 +491,7 @@ export default function Home({ onStartQuiz }) {
 
           {/* 2. State Guidelines Link Center (고시 가이드라인 센터) */}
           <section>
-            <h2 className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">가이드라인 & 법조문 원문 정독</h2>
+            <h2 className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono mb-3">Guidelines & Regulations</h2>
             <div className="grid grid-cols-1 gap-3">
               {externalGuidelines.map((guide, idx) => (
                 <a
@@ -497,21 +499,21 @@ export default function Home({ onStartQuiz }) {
                   href={guide.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-start justify-between p-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm hover:border-primary-400 transition-colors group"
+                  className="flex items-start justify-between p-4 apple-card rounded-apple-lg hover:border-apple-gray dark:hover:border-neutral-700 transition-colors group"
                 >
                   <div className="flex gap-3">
-                    <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 mt-0.5">
-                      <FileText size={20} />
+                    <div className="p-2.5 rounded bg-apple-pearl dark:bg-neutral-950 border border-apple-border dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 mt-0.5">
+                      <FileText size={16} />
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mb-0.5">{guide.org}</span>
-                      <h3 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                      <span className="text-[9px] font-bold text-apple-gray dark:text-neutral-500 font-mono block mb-0.5">{guide.org}</span>
+                      <h3 className="font-semibold text-xs text-neutral-950 dark:text-white group-hover:text-apple-blue dark:group-hover:text-apple-sky transition-colors">
                         {guide.title}
                       </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{guide.desc}</p>
+                      <p className="text-[11px] text-apple-gray dark:text-neutral-400 mt-1 leading-relaxed">{guide.desc}</p>
                     </div>
                   </div>
-                  <ExternalLink size={14} className="text-slate-300 dark:text-slate-700 flex-shrink-0 ml-2" />
+                  <ExternalLink size={12} className="text-neutral-300 dark:text-neutral-700 flex-shrink-0 ml-2" />
                 </a>
               ))}
             </div>
@@ -519,23 +521,23 @@ export default function Home({ onStartQuiz }) {
 
           {/* 3. Mindmap Keyword Chain (마인드맵 백지 복습) */}
           <section>
-            <h2 className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">키워드 꼬리물기 (백지 복습)</h2>
-            <div className="space-y-4">
+            <h2 className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono mb-3">Mindmap Blanks</h2>
+            <div className="space-y-3">
               {mindmapData.map((category) => (
                 <div
                   key={category.id}
-                  className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden"
+                  className="apple-card rounded-apple-lg overflow-hidden"
                 >
                   {/* Category Header */}
                   <button
                     onClick={() => toggleNode(category.id)}
-                    className="w-full flex items-center justify-between p-4 bg-slate-50/50 dark:bg-slate-800/10 font-bold text-sm text-slate-800 dark:text-slate-200 text-left"
+                    className="w-full flex items-center justify-between p-4 bg-apple-pearl/60 dark:bg-neutral-950/20 font-semibold text-xs text-neutral-800 dark:text-neutral-200 text-left cursor-pointer"
                   >
                     <div className="flex items-center gap-2">
-                      <GitMerge size={16} className="text-primary-600 dark:text-primary-400" />
+                      <GitMerge size={14} className="text-apple-blue dark:text-apple-sky" />
                       <span>{category.title}</span>
                     </div>
-                    {expandedNodes[category.id] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                    {expandedNodes[category.id] ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                   </button>
 
                   {/* Children Nodes */}
@@ -545,13 +547,13 @@ export default function Home({ onStartQuiz }) {
                         initial={{ height: 0 }}
                         animate={{ height: 'auto' }}
                         exit={{ height: 0 }}
-                        className="overflow-hidden border-t border-slate-50 dark:border-slate-800 divide-y divide-slate-50 dark:divide-slate-800/50"
+                        className="overflow-hidden border-t border-apple-border dark:border-neutral-800 divide-y divide-neutral-100 dark:divide-neutral-800/50"
                       >
                         {category.children.map((child) => (
                           <div key={child.id} className="p-4 space-y-3">
                             <div>
-                              <h4 className="font-semibold text-xs text-slate-800 dark:text-slate-200">{child.title}</h4>
-                              <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 leading-relaxed">{child.desc}</p>
+                              <h4 className="font-semibold text-xs text-neutral-850 dark:text-neutral-200">{child.title}</h4>
+                              <p className="text-[10px] text-apple-gray dark:text-neutral-500 mt-0.5 leading-relaxed">{child.desc}</p>
                             </div>
 
                             {/* Keywords Grid & Personal Blank Notes */}
@@ -560,7 +562,7 @@ export default function Home({ onStartQuiz }) {
                                 {child.keywords.map((kw, kwIdx) => (
                                   <span
                                     key={kwIdx}
-                                    className="text-[9px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium"
+                                    className="text-[9px] px-2 py-0.5 rounded-full bg-apple-pearl dark:bg-neutral-800 border border-apple-border dark:border-neutral-800/40 text-neutral-600 dark:text-neutral-400 font-mono"
                                   >
                                     #{kw}
                                   </span>
@@ -572,7 +574,7 @@ export default function Home({ onStartQuiz }) {
                                 value={mindmapNotes[child.id] || ''}
                                 onChange={(e) => saveMindmapNote(child.id, e.target.value)}
                                 rows={2}
-                                className="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 text-slate-600 dark:text-slate-300 focus:outline-none focus:border-primary-400 focus:bg-white dark:focus:bg-slate-900 transition-colors"
+                                className="w-full text-xs p-3 rounded-apple-sm border border-apple-border dark:border-neutral-800 bg-apple-pearl/40 dark:bg-neutral-950 text-neutral-600 dark:text-neutral-300 focus:outline-none focus:border-apple-gray focus:bg-white dark:focus:bg-neutral-900 transition-colors"
                               />
                             </div>
                           </div>
@@ -590,21 +592,21 @@ export default function Home({ onStartQuiz }) {
       {/* 4. Comparison Table Builder Modal (비교 분석표 모달) */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center p-4 bg-slate-900/60 dark:bg-black/70 backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex items-end justify-center p-4 bg-black/40 dark:bg-black/60 backdrop-blur-xs">
             <motion.form
               onSubmit={handleSaveTable}
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="w-full max-w-md bg-white dark:bg-slate-900 rounded-t-3xl rounded-b-xl shadow-2xl p-6 border border-slate-100 dark:border-slate-800 overflow-y-auto max-h-[85vh] safe-padding-bottom"
+              className="w-full max-w-md bg-white dark:bg-neutral-900 rounded-t-apple-lg rounded-b-none shadow-2xl p-6 border-t border-l border-r border-apple-border dark:border-neutral-800 overflow-y-auto max-h-[85vh] safe-padding-bottom"
             >
               <div className="flex justify-between items-center mb-5">
-                <h3 className="font-bold text-base text-slate-900 dark:text-white">새 비교 대조표 생성</h3>
+                <h3 className="font-semibold text-sm text-neutral-900 dark:text-white font-display">새 비교 대조표 생성</h3>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="text-xs text-slate-400 hover:text-slate-700"
+                  className="text-xs text-apple-blue dark:text-apple-sky hover:underline cursor-pointer"
                 >
                   닫기
                 </button>
@@ -613,38 +615,38 @@ export default function Home({ onStartQuiz }) {
               {/* Title & Columns */}
               <div className="space-y-4 mb-5">
                 <div>
-                  <label className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase block mb-1">비교표 제목</label>
+                  <label className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono block mb-1">비교표 제목</label>
                   <input
                     type="text"
                     required
                     placeholder="예: NAS vs SAN"
                     value={tableTitle}
                     onChange={(e) => setTableTitle(e.target.value)}
-                    className="w-full text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary-400"
+                    className="w-full text-xs p-3 rounded-apple-sm border border-apple-border dark:border-neutral-800 bg-apple-pearl/40 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:border-apple-gray"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase block mb-1">대상 열 1</label>
+                    <label className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono block mb-1">대상 열 1</label>
                     <input
                       type="text"
                       required
                       placeholder="예: NAS"
                       value={col1}
                       onChange={(e) => setCol1(e.target.value)}
-                      className="w-full text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary-400"
+                      className="w-full text-xs p-3 rounded-apple-sm border border-apple-border dark:border-neutral-800 bg-apple-pearl/40 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:border-apple-gray"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase block mb-1">대상 열 2</label>
+                    <label className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono block mb-1">대상 열 2</label>
                     <input
                       type="text"
                       required
                       placeholder="예: SAN"
                       value={col2}
                       onChange={(e) => setCol2(e.target.value)}
-                      className="w-full text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary-400"
+                      className="w-full text-xs p-3 rounded-apple-sm border border-apple-border dark:border-neutral-800 bg-apple-pearl/40 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:border-apple-gray"
                     />
                   </div>
                 </div>
@@ -652,8 +654,8 @@ export default function Home({ onStartQuiz }) {
 
               {/* Rows List */}
               <div className="space-y-3 mb-6">
-                <label className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase block">비교 속성 및 상세 내용</label>
-                <div className="space-y-3 max-h-[25vh] overflow-y-auto pr-1">
+                <label className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono block">비교 속성 및 상세 내용</label>
+                <div className="space-y-2 max-h-[25vh] overflow-y-auto pr-1">
                   {newRows.map((row, idx) => (
                     <div key={idx} className="grid grid-cols-3 gap-2 items-center">
                       <input
@@ -661,21 +663,21 @@ export default function Home({ onStartQuiz }) {
                         placeholder="속성 (예: 비용)"
                         value={row.attr}
                         onChange={(e) => updateBuilderRow(idx, 'attr', e.target.value)}
-                        className="text-[10px] p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary-400"
+                        className="text-[10px] p-2.5 rounded-apple-sm border border-apple-border dark:border-neutral-800 bg-apple-pearl/40 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:border-apple-gray"
                       />
                       <input
                         type="text"
                         placeholder={`${col1 || '대상1'} 값`}
                         value={row.val1}
                         onChange={(e) => updateBuilderRow(idx, 'val1', e.target.value)}
-                        className="text-[10px] p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary-400"
+                        className="text-[10px] p-2.5 rounded-apple-sm border border-apple-border dark:border-neutral-800 bg-apple-pearl/40 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:border-apple-gray"
                       />
                       <input
                         type="text"
                         placeholder={`${col2 || '대상2'} 값`}
                         value={row.val2}
                         onChange={(e) => updateBuilderRow(idx, 'val2', e.target.value)}
-                        className="text-[10px] p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary-400"
+                        className="text-[10px] p-2.5 rounded-apple-sm border border-apple-border dark:border-neutral-800 bg-apple-pearl/40 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:border-apple-gray"
                       />
                     </div>
                   ))}
@@ -684,7 +686,7 @@ export default function Home({ onStartQuiz }) {
                 <button
                   type="button"
                   onClick={addBuilderRow}
-                  className="w-full py-2 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-600 dark:text-slate-300 rounded-xl transition-all tap-highlight"
+                  className="w-full py-2 bg-apple-pearl dark:bg-neutral-950 hover:bg-neutral-100 dark:hover:bg-neutral-850 border border-apple-border dark:border-neutral-800 text-[11px] font-bold text-neutral-600 dark:text-neutral-300 rounded-full transition-all tap-highlight cursor-pointer font-display"
                 >
                   속성 행 추가
                 </button>
@@ -693,7 +695,7 @@ export default function Home({ onStartQuiz }) {
               {/* Save Trigger */}
               <button
                 type="submit"
-                className="w-full py-3.5 bg-primary-600 dark:bg-primary-500 hover:bg-primary-700 text-white text-xs font-bold rounded-2xl shadow-md shadow-primary-500/10 tap-highlight transition-all"
+                className="w-full py-3.5 bg-apple-blue hover:bg-apple-blue/90 text-white text-xs font-bold rounded-full shadow-sm tap-highlight transition-all cursor-pointer font-display"
               >
                 비교 대조표 저장
               </button>

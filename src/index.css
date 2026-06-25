@@ -1,15 +1,22 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @config "../tailwind.config.js";
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-800 transition-colors duration-300 font-sans antialiased overflow-x-hidden;
+    @apply bg-apple-parchment text-apple-ink transition-colors duration-300 font-sans antialiased overflow-x-hidden;
+    font-size: 17px;
+    letter-spacing: -0.022em;
     -webkit-tap-highlight-color: transparent;
   }
   
   body.dark {
-    @apply bg-slate-950 text-slate-100;
+    @apply bg-neutral-900 text-neutral-100;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-semibold text-apple-ink dark:text-neutral-50 font-display;
+    letter-spacing: -0.025em;
   }
 }
 
@@ -22,10 +29,10 @@
   @apply bg-transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+  @apply bg-neutral-200 dark:bg-neutral-800 rounded-full;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-400 dark:bg-slate-600;
+  @apply bg-neutral-300 dark:bg-neutral-700;
 }
 
 /* Safe area inset for mobile browsers */
@@ -33,7 +40,24 @@
   padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
 }
 
-/* Micro-interactions */
+/* Apple micro-interaction: Active state shifts slightly smaller */
 .tap-highlight {
-  @apply active:scale-95 transition-transform duration-100;
+  @apply active:scale-95 transition-all duration-100;
 }
+
+/* Apple Stark Border Effect */
+.apple-border {
+  @apply border border-apple-border dark:border-neutral-800;
+}
+
+/* Apple Zero-shadow Flat Design Card */
+.apple-card {
+  @apply bg-white dark:bg-neutral-900 border border-apple-border dark:border-neutral-800;
+}
+
+/* Product Soft Shadow (used only on actual graphic illustrations or floating elements) */
+.apple-product-shadow {
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.05), 0px 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+

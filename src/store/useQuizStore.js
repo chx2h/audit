@@ -16,6 +16,8 @@ export const useQuizStore = create(
 
       // DB에서 문제 데이터를 비동기로 가져오는 액션
       fetchQuestions: async () => {
+        // 로컬 데이터 저장 데이터로만 쓰기 위해 DB(API) 연결 주석 처리
+        /*
         try {
           // 로컬 개발/Vercel 실배포에 모두 호환되는 상대 경로로 호출합니다.
           const response = await fetch('/api/questions');
@@ -27,6 +29,8 @@ export const useQuizStore = create(
           // 실제 API 연결 실패 시 앱 작동을 위해 로컬 파일 데이터로 폴백
           set({ questions: questionsData });
         }
+        */
+        set({ questions: questionsData });
       },
 
       // Bookmarks Actions
