@@ -9,6 +9,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function Home({ onStartQuiz }) {
   const {
     questions,
+    isIntensiveMode,
+    toggleIntensiveMode,
     bookmarks,
     wrongAnswers,
     solvedHistory,
@@ -244,15 +246,55 @@ export default function Home({ onStartQuiz }) {
         </button>
       </div>
 
-      {/* Tab Contents: QUIZ */}
-      {activeTab === 'quiz' && (
-        <motion.div
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.15 }}
-        >
-          {/* Stats Card Dashboard (그림자 제거, 18px 모서리) */}
-          <section className="mb-6">
+  {/* Tab Contents: QUIZ */}
+  {activeTab === 'quiz' && (
+    <motion.div
+      initial={{ opacity: 0, y: 5 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.15 }}
+    >
+      {/* 집중 암기모드 배너/토글 */}
+      <section className="mb-6">
+        <div className={`p-4 rounded-apple-lg border transition-all duration-300 ${
+          isIntensiveMode 
+            ? 'bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 border-indigo-200 dark:border-indigo-800 shadow-[0_0_15px_rgba(99,102,241,0.15)]' 
+            : 'bg-white dark:bg-neutral-900 border-apple-border dark:border-neutral-800'
+        }`}>
+          <div className="flex justify-between items-start">
+            <div className="flex-1 pr-4">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <span className="p-1 rounded bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400">
+                  <Award size={14} className="animate-pulse" />
+                </span>
+                <h3 className="text-xs font-bold text-neutral-800 dark:text-neutral-200">
+                  집중 문제 암기 모드
+                </h3>
+                <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-500 text-white font-mono font-bold scale-90 origin-left">INTENSIVE</span>
+              </div>
+              <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-normal">
+                부정형 기출문제(~가 아닌 것은?)를 긍정형(~맞는 것은?) 3문제로 쪼개어, 헷갈리는 지문을 바로 정답으로 외우는 고효율 암기 기법입니다.
+              </p>
+            </div>
+            <div className="flex items-center h-full pt-1.5">
+              <button
+                onClick={toggleIntensiveMode}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer outline-none ${
+                  isIntensiveMode ? 'bg-indigo-600' : 'bg-neutral-200 dark:bg-neutral-800'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    isIntensiveMode ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Card Dashboard (그림자 제거, 18px 모서리) */}
+      <section className="mb-6">
             <h2 className="text-[10px] font-bold text-apple-gray dark:text-neutral-500 uppercase tracking-widest font-mono mb-2">My Learning Progress</h2>
             <div className="apple-card rounded-apple-lg p-5">
               <div className="grid grid-cols-2 gap-4 mb-5">

@@ -1,11 +1,84 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import questionsData from '../data/questions.json';
+import intensiveQuestionsData from '../data/intensive_questions.json';
+
+// 과목별 보기 풀 구성
+const subjectOptionsPool = {};
+questionsData.forEach(q => {
+  if (q.subject && Array.isArray(q.options)) {
+    if (!subjectOptionsPool[q.subject]) {
+      subjectOptionsPool[q.subject] = new Set();
+    }
+    q.options.forEach(opt => {
+      if (opt && opt.trim() !== '') {
+        subjectOptionsPool[q.subject].add(opt.trim());
+      }
+    });
+  }
+});
+Object.keys(subjectOptionsPool).forEach(sub => {
+  subjectOptionsPool[sub] = Array.from(subjectOptionsPool[sub]);
+});
+
+// 랜덤 보기 믹싱 함수
+function getRandomFakeOptions(subject, count, excludeList) {
+  const pool = subjectOptionsPool[subject] || [];
+  const result = [];
+  const maxAttempts = 500;
+  let attempts = 0;
+  while (result.length < count && attempts < maxAttempts) {
+    attempts++;
+    const randOpt = pool[Math.floor(Math.random() * pool.length)];
+    if (!randOpt) continue;
+    const isExcluded = excludeList.some(ex => 
+      ex.toLowerCase() === randOpt.toLowerCase() || 
+      randOpt.includes(ex) || 
+      ex.includes(randOpt)
+    );
+    const isAlreadySelected = result.includes(randOpt);
+    if (!isExcluded && !isAlreadySelected) {
+      result.push(randOpt);
+    }
+  }
+  while (result.length < count) {
+    result.push(`기타 보기 항목 대안 ${result.length + 1}`);
+  }
+  return result;
+}
+
+// 런타임 집중 암기 데이터를 동적으로 믹싱하는 함수
+function getRuntimeIntensiveQuestions() {
+  return intensiveQuestionsData.map(q => {
+    const isTransformed = q.id.endsWith('-A') || q.id.endsWith('-B') || q.id.endsWith('-C');
+    if (isTransformed) {
+      const trueOptionText = q.options[q.answer - 1];
+      const correctSlot = Math.floor(Math.random() * 4);
+      const fakeOptions = getRandomFakeOptions(q.subject, 3, q.options);
+      
+      const newOptions = new Array(4);
+      newOptions[correctSlot] = trueOptionText;
+      let fakeIdx = 0;
+      for (let i = 0; i < 4; i++) {
+        if (i !== correctSlot) {
+          newOptions[i] = fakeOptions[fakeIdx++];
+        }
+      }
+      return {
+        ...q,
+        options: newOptions,
+        answer: correctSlot + 1
+      };
+    }
+    return q;
+  });
+}
 
 export const useQuizStore = create(
   persist(
     (set, get) => ({
       questions: [],
+      isIntensiveMode: false,
       bookmarks: [], // Array of question IDs
       wrongAnswers: [], // Array of question IDs
       solvedHistory: {}, // { [questionId]: { isCorrect: boolean, selectedAnswer: number, solvedAt: string } }
@@ -16,21 +89,18 @@ export const useQuizStore = create(
 
       // DB에서 문제 데이터를 비동기로 가져오는 액션
       fetchQuestions: async () => {
-        // 로컬 데이터 저장 데이터로만 쓰기 위해 DB(API) 연결 주석 처리
-        /*
-        try {
-          // 로컬 개발/Vercel 실배포에 모두 호환되는 상대 경로로 호출합니다.
-          const response = await fetch('/api/questions');
-          if (!response.ok) throw new Error('API 응답에 오류가 발생했습니다.');
-          const data = await response.json();
-          set({ questions: data });
-        } catch (error) {
-          console.error("문제 로드 실패: 로컬 백업 데이터를 사용합니다.", error);
-          // 실제 API 연결 실패 시 앱 작동을 위해 로컬 파일 데이터로 폴백
-          set({ questions: questionsData });
-        }
-        */
-        set({ questions: questionsData });
+        const { isIntensiveMode } = get();
+        set({ questions: isIntensiveMode ? getRuntimeIntensiveQuestions() : questionsData });
+      },
+
+      toggleIntensiveMode: () => {
+        set((state) => {
+          const nextMode = !state.isIntensiveMode;
+          return {
+            isIntensiveMode: nextMode,
+            questions: nextMode ? getRuntimeIntensiveQuestions() : questionsData
+          };
+        });
       },
 
       // Bookmarks Actions
@@ -147,7 +217,8 @@ export const useQuizStore = create(
         theme: state.theme,
         optionNotes: state.optionNotes,
         comparisonTables: state.comparisonTables,
-        mindmapNotes: state.mindmapNotes
+        mindmapNotes: state.mindmapNotes,
+        isIntensiveMode: state.isIntensiveMode
       })
     }
   )
